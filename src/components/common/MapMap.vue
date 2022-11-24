@@ -1,17 +1,17 @@
 <template>
-    <div class="mapview"></div>
+    <div id="mapview"></div>
 </template>
 
 <script>
 import { loadModules } from 'esri-loader';
 
 const options = {
-    url: 'https://js.arcgis.com/4.20/init.js',
-    css: 'https://js.arcgis.com/4.20/esri/themes/light/main.css',
+    url: 'https://js.arcgis.com/4.18/init.js',
+    css: 'https://js.arcgis.com/4.18/esri/themes/light/main.css',
 };
 
 export default {
-    name: 'MaPview',
+    name: 'MapMap',
     comments: {},
     mounted: function () {
         this._createMapView();
