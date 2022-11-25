@@ -1,5 +1,10 @@
 <template>
-    <div id="mapview"></div>
+    <div class="mapview-pannel">
+        <div id="mapview"></div>
+        <div id="basemaptoggle"></div>
+        <div id="scalebar"></div>
+        <div id="zoom"></div>
+    </div>
 </template>
 
 <script>
@@ -24,10 +29,31 @@ export default {
     methods: {
         async _createMapView() {
             // 将API中的模块解构为数组
-            const [Map, MapView] = await loadModules(['esri/Map', 'esri/views/MapView'], options);
+            const [Map, MapView, Basemap, TileLayer, BasemapToggle, ScaleBar, Zoom] = await loadModules(
+                [
+                    'esri/Map',
+                    'esri/views/MapView',
+                    'esri/Basemap',
+                    'esri/layers/TileLayer',
+                    'esri/widgets/BasemapToggle',
+                    'esri/widgets/ScaleBar',
+                    'esri/widgets/Zoom',
+                ],
+                options,
+            );
 
+            let basemap = new Basemap({
+                baseLayers: [
+                    new TileLayer({
+                        url: 'http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer',
+                        title: 'Basemap',
+                    }),
+                ],
+                title: 'basemap',
+                id: 'basemap',
+            });
             const map = new Map({
-                basemap: 'osm',
+                basemap,
             });
 
             const view = new MapView({
@@ -37,6 +63,26 @@ export default {
                 center: [113.828185, 34.824426],
                 // center:[113.688266,34.77982],//郑州市中心12级
             });
+
+            const basemapToggle = new BasemapToggle({
+                view: view,
+                nextBasemap: 'hybrid',
+                container: 'basemaptoggle',
+            });
+            view.ui.add(basemapToggle);
+
+            const scaleBar = new ScaleBar({
+                view: view,
+                unit: 'metric',
+                container: 'scalebar',
+            });
+            view.ui.add(scaleBar);
+
+            const zoom = new Zoom({
+                view: view,
+                container: 'zoom',
+            });
+            view.ui.add(zoom);
 
             view.ui.components = [];
 
@@ -49,9 +95,25 @@ export default {
 </script>
 
 <style>
+.mapview-pannel,
 #mapview {
     position: relative;
     width: 100%;
     height: 100%;
+}
+#basemaptoggle {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+}
+#scalebar {
+    position: absolute;
+    left: 15px;
+    bottom: 15px;
+}
+#zoom {
+    position: absolute;
+    right: 15px;
+    bottom: 110px;
 }
 </style>
